@@ -7,7 +7,7 @@ bin_PROGRAMS = apt-dater adsh
 SOURCE_DATE_EPOCH ?= $(shell date +%s)
 
 SHARED_SOURCES =			\
-	adproto.h			\
+	../include/adproto.h		\
 	apt-dater.c			\
 	apt-dater.h			\
 	colors.c			\
@@ -41,14 +41,17 @@ SHARED_SOURCES =			\
 	clusters.h			\
 	glue.c				\
 	glue.h				\
-if FEAT_TMUX				\
-	tmux.h				\
-	tmux.c				\
-else					\
-	screen.c			\
-	screen.h			\
-endif
+	ttymux.h
 
+if FEAT_TMUX_ENABLED
+SHARED_SOURCES +=			\
+	tmux.c				\
+	tmux.h
+else
+SHARED_SOURCES +=			\
+	screen.c			\
+	screen.h
+endif
 
 apt_dater_SOURCES =			\
 	main.c				\

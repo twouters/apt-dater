@@ -1,4 +1,5 @@
 SUBDIRS = conf po man src lib etc schema
+EXTRA_DIST = build/apt-dater.spec
 
 AUTOMAKE_OPTIONS = 							\
 	1.9								\
@@ -10,8 +11,6 @@ distclean-local:
 	rm -f po/stamp-po
 
 ACLOCAL_AMFLAGS = -I m4
-
-EXTRA_DIST = config.rpath m4/ChangeLog mkinstalldirs
 
 check-gettext:
 	@if test x$(USE_NLS) != "xyes" ; then echo "Missing gettext. Rerun configure and check for" \
