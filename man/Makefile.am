@@ -1,9 +1,7 @@
-man_MANS=apt-dater.8 apt-dater.html apt-dater.xml.5 apt-dater.xml.html apt-dater-host.1
+dist_man_MANS=apt-dater.8 apt-dater.html apt-dater.xml.5 apt-dater.xml.html apt-dater-host.1
 
 XSLTPROC=@XSLTPROC@
 DBXSL=@DBXSL@
-
-EXTRA_DIST=$(man_MANS)
 
 %.html: %.xml
 	$(XSLTPROC) -o $@ -''-nonet $(DBXSL)/html/docbook.xsl $<

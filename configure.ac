@@ -6,16 +6,13 @@ PACKAGE=apt-dater
 AC_PREREQ(2.61)
 AC_INIT(apt-dater, 1.0.3, apt-dater@ibh.de)
 
-# include local macros
-m4_include([m4/adl_recursive_eval.m4])
-
 # Environment
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE
 
-AM_GNU_GETTEXT_VERSION([0.19.3])
+AM_GNU_GETTEXT_VERSION([0.18.1])
 
 case "${target_os}" in
 darwin*)
@@ -102,12 +99,29 @@ AC_SUBST(GIO_LIBS)
 AC_SUBST(LIBXML2_CFLAGS)
 AC_SUBST(LIBXML2_LIBS)
 AC_PROG_INSTALL
+AC_PROG_LN_S
 
 # Some additional definitions
 AC_DEFINE(HAVE_COLOR,1,[ Define if your curses library supports color. ])
 AC_DEFINE(HAVE_USE_DEFAULT_COLORS,1,
 	[ Define if your curses library supports function use_default_colors. ])
 AC_DEFINE(HAVE_FLOCK,1,[ Define if funtion flock avaible. ])
+
+# adl_RECURSIVE_EVAL(VALUE, RESULT)
+# =================================
+# Interpolate the VALUE in loop until it doesn't change,
+# and set the result to $RESULT.
+# WARNING: It's easy to get an infinite loop with some unsane input.
+AC_DEFUN([adl_RECURSIVE_EVAL],
+[_lcl_receval="$1"
+$2=`(test "x$prefix" = xNONE && prefix="$ac_default_prefix"
+     test "x$exec_prefix" = xNONE && exec_prefix="${prefix}"
+     _lcl_receval_old=''
+     while test "[$]_lcl_receval_old" != "[$]_lcl_receval"; do
+       _lcl_receval_old="[$]_lcl_receval"
+       eval _lcl_receval="\"[$]_lcl_receval\""
+     done
+     echo "[$]_lcl_receval")`])
 
 # Checks for programs.
 AC_PROG_CC
@@ -320,7 +334,7 @@ echo "$screen_binary"
 # Try to find out where screen stores the sockets
 echo -n "checking for screen socket path... "
 if test -x $screen_binary; then
-    screen_sockpath=`build/screen_sockpath "$screen_binary"`
+    screen_sockpath=`$srcdir/lib/screen_sockpath "$screen_binary"`
     if test ! -d "$screen_sockpath"; then
 	echo "Got invalid path '$screen_sockpath' - fallback to common systemdefault."
 	screen_sockpath="/var/run/screen"
@@ -339,6 +353,7 @@ AC_ARG_ENABLE(tmux,
 	[  --enable-tmux      Enable tmux terminal multiplexer (replaces screen).], [enable_tmux="yes"],
 	[enable_tmux="no"])
 AC_MSG_RESULT($enable_tmux)
+AM_CONDITIONAL(FEAT_TMUX_ENABLED, test x"$enable_tmux" = x"yes")
 if test "$enable_tmux" = "yes"; then
     # Check if `tmux' is installed on your system
     echo -n "checking for tmux... "

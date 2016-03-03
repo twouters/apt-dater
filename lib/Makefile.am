@@ -1,6 +1,6 @@
-EXTRA_DISTS=cmd hosts2xml ssh-addonce tmux-hint
-
-install-exec-hook:
-	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
-	$(INSTALL) $(EXTRA_DISTS) $(DESTDIR)$(pkglibdir)
-	$(INSTALL) adsh $(DESTDIR)$(bindir)
+dist_noinst_SCRIPTS=screen_sockpath
+dist_bin_SCRIPTS=adsh
+dist_pkglibexec_SCRIPTS=cmd hosts2xml ssh-addonce
+if FEAT_TMUX_ENABLED
+dist_pkglibexec_SCRIPTS+=tmux-hint
+endif
